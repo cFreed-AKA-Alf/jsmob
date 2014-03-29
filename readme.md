@@ -44,23 +44,23 @@ IMPORTANT NOTES about cols width computation:
     </div>
 
 ####RESULTING LAYOUT
-        FULL LAYOUT (window.width > 640px)            REDUCED LAYOUT
-    +----------------------------------------+    +----------------------+
-    |                 %Block                 |    |        %Block        |
-    |              […elements…]              |    |     […elements…]     |
-    |+----------+----------+     +----------+|    |+--------------------+|
-    ||  %Col_1  |  %Col_2  | … … |  %Col_3  ||    ||       %Col_2       ||
-    ||          |          |     |          ||    |+--------------------+|
-    |+----------+----------+     +----------+|    ||       %Col_3       ||
-    |              […elements…]              |    |+--------------------+|
-    +----------------------------------------+    ||       %Col_1       ||
-                                                  |+--------------------+|
-                                                  |     […elements…]     |
-                                                  +----------------------+
+     FULL LAYOUT (window.width > 640px)         REDUCED LAYOUT
+    +----------------------------------+    +----------------------+
+    |              %Block              |    |        %Block        |
+    |           […elements…]           |    |     […elements…]     |
+    |+----------+----------+----------+|    |+--------------------+|
+    ||  %Col_1  |  %Col_2  |  %Col_3  ||    ||       %Col_2       ||
+    ||          |          |          ||    |+--------------------+|
+    |+----------+----------+----------+|    ||       %Col_3       ||
+    |           […elements…]           |    |+--------------------+|
+    +----------------------------------+    ||       %Col_1       ||
+                                            |+--------------------+|
+                                            |     […elements…]     |
+                                            +----------------------+
 
 HANDLING MENUS
 --------------
-A *%Menu* class points out a menu-wrapper element (may be a direct or indirect parent of the involved menu-heading `<ul>`, which must be the only 1st level `<ul>` in the scope of this parent).  
+A *%Menu* class points out a menu-wrapper element (may be a direct or indirect parent of the involved menu base `<ul>`, which must be the only 1st level `<ul>` in the scope of this parent).  
 If it is not embedded in a *%Block* element, it will automatically become itself a block, whose breakpoint will be set to the default one (see above).  
 A *%Main* class may be added to one (and only one) *%Menu*: in reduced layout, the menu is  replaced by a "commander" button like <span style="font-weight:1.5em;">**&#9776;**</span>, which toggles the 1st level options (stacked when visible).  
 For other menus, 1st level options remain always visible.  
