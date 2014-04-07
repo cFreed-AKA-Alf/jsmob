@@ -5,7 +5,7 @@
 /*
 Look at jsmob.md for details
 */
-var $$=function() {
+(function() {
 if(typeof $=='undefined'){$=jQuery.noConflict();}
 //=============================================================================
 var
@@ -36,6 +36,7 @@ var
     'Mnt', // Main-nav toggle button
     'Open', // applied to a submenu when currently visible
     'Opt', // user marker for an optional element (dropped in reduced layout)
+    'Rootmenu', // applied to root <ul>  to simplfy CSS specifs addressing
     'Stack', // applied to a block when in reduced layout
     'Submenu', // applied to any <ul> which is not the root one
     'Zoom', // user marker for an <img> to follow responsive mechanism
@@ -78,7 +79,7 @@ var
     Menu: function(element) {
       this.id=element.id;
       this.tag=element.tagName; // for further use
-      this.masterUl
+      this.rootUl
     },
   };
 //=============================================================================
@@ -298,19 +299,20 @@ var process= function() { /*
   $(jqMENU).each(function(i) {
     /* In the scope of a given %Menu, the 1st encountered <ul> is seen as the
       menu (the %Menu wrapper should not contain any other 1st level <ul>) */
-    var masterUl=$(this).find('ul:first');
+    var rootUl=$(this).is('ul')?$(this):$(this).find('ul:first');
+    rootUl.addClass(ROOTMENU); // (to simplify CSS specifs addressing)
     if($(this).hasClass(MAIN)) {
-      if(main) { // a main menu has been already defined, deny
+      if(main) { // a main menu has been already defined, deny this one
         console.warn(
           '%Menu%Main defined more than once, toggled to simple menu');
       } else { // create a main-nav toggle button for this menu
         main=true;
         var parentBlock=$(this).closest(jqBLOCK)[0];
         enforceId(parentBlock);
-        createMNT(masterUl[0],parentBlock.id);
+        createMNT(rootUl[0],parentBlock.id);
       }
     }
-    masterUl.find('ul').each(function() { // (only 2 levels are allowed ***)
+    rootUl.find('ul').each(function() { // (only 2 levels are allowed ***)
       $(this).addClass(SUBMENU); // will be hidden when %Stack, unless %Open
       createDDT($(this).prev(/* should be <div> or <a> */));
     });
@@ -401,21 +403,19 @@ Blocks and Cols: REDUCED LAYOUT\n\
   min-height: 0 !important;\n\
 }\n\
 /*\n\
-Menus defaults: FULL LAYOUT\n\
-----------------------------*/\n\
-'+jqMENU+' ul,'+jqMENU+'li {\n\
-  width: inherit !important;\n\
-}\n\
+Menus: REDUCED LAYOUT\n\
+----------------------*/\n\
 '+jqMNT+' {\n\
   position: fixed;\n\
   right: 7px;\n\
   top: 7px;\n\
   border-radius: 4px;\n\
-  box-shadow: 5px 5px 2px #888;\n\
+  /* box-shadow: 5px 5px 2px #888; */\n\
   background-color: #333;\n\
   padding: 8px;\n\
   color: #fff;\n\
   font-size: x-large;\n\
+  font-weight: bold;\n\
   z-index: 99999;\n\
   cursor: pointer;\n\
 }\n\
@@ -431,8 +431,8 @@ Menus defaults: FULL LAYOUT\n\
   border-radius: 15px !important;\n\
   height: 20px !important;\n\
   position: absolute !important;\n\
-  right: 45px !important; /* in order not to be overwritten by MNT button */\n\
-  top: 7px !important;\n\
+  left: 5px !important;\n\
+  top: 2px !important;\n\
   width: 20px !important;\n\
   z-index: 9999;\n\
   cursor: pointer;\n\
@@ -447,18 +447,24 @@ Menus defaults: FULL LAYOUT\n\
   width: 0 !important;\n\
 }\n\
 /*\n\
-Menus: REDUCED LAYOUT\n\
-----------------------*/\n\
-'+jqSTACK+' '+jqMENU+' ul,\n\
-'+jqSTACK+jqMENU+' ul,\n\
-/* (%Menu may be either embedded in %Block or be the %Block itself */\n\
-'+jqSTACK+'  ul'+jqMENU+',\n\
-ul'+jqSTACK+jqMENU+',\n\
-/* (in addition <ul> may be either embedded in %Menu or be the %Menu itself */\n\
-'+jqSTACK+' '+jqMENU+' li,\n\
-'+jqSTACK+jqMENU+' li {\n\
+When %Stack, all %Menu components (%Rootmenu, %Submenu and their embedded\n\
+<li>, <div> and <a>) must remain independant of the original CSS */\n\
+'+jqSTACK+' '+jqROOTMENU+', '+jqSTACK+jqROOTMENU+', '+jqSTACK+' '+jqSUBMENU+',\n\
+'+jqSTACK+' '+jqROOTMENU+' li, '+jqSTACK+jqROOTMENU+' li {\n\
   float: none !important;\n\
   position: static !important;\n\
+  width: inherit !important;\n\
+  margin: 0 !important;\n\
+  padding: 0 !important;\n\
+}\n\
+/*\n\
+Set <div> and <a> hard-fixed dims, ensuring a correct positioning of DDT\'s */\n\
+'+jqSTACK+' '+jqROOTMENU+' div, '+jqSTACK+jqROOTMENU+' div,\n\
+'+jqSTACK+' '+jqROOTMENU+' a, '+jqSTACK+jqROOTMENU+' a {\n\
+  margin: 0 !important;\n\
+  height: 11px !important;\n\
+  padding: 12px 0 12px 40px !important;\n\
+  font-size: 11px !important;\n\
 }\n\
 '+jqSTACK+' '+jqSUBMENU+' {\n\
   display: none !important;\n\
@@ -650,7 +656,7 @@ Creates a main-nav toggle button (position fixed).
     .attr({'data-menu':ul.id,'data-block':parentBlockId})
     // when click, toggle menu:
     .click(function(event) {
-      $(jqMENU).toggle();
+      $(jqMENU+jqMAIN).toggle();
       $(event.target).toggleClass(ACTIVE);
       if($(event.target).hasClass(ACTIVE)) {
         window.scrollTo(0,0); // back to menu
@@ -905,5 +911,5 @@ Then for main %Menu, hide/displays MNT depending on situation against breakpoint
   setTimeout(liveWidthDisplay,_params.cssTimeout); // adjust LWD's position
 }
 //=============================================================================
-}();
+}())
 //=============================================================================
