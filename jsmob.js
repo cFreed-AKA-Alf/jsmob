@@ -453,7 +453,7 @@ When %Stack, all %Menu components (%Rootmenu, %Submenu and their embedded\n\
 '+jqSTACK+' '+jqROOTMENU+' li, '+jqSTACK+jqROOTMENU+' li {\n\
   float: none !important;\n\
   position: static !important;\n\
-  width: inherit !important;\n\
+  width: 100% !important;\n\
   margin: 0 !important;\n\
   padding: 0 !important;\n\
 }\n\
@@ -462,7 +462,7 @@ Set <div> and <a> hard-fixed dims, ensuring a correct positioning of DDT\'s */\n
 '+jqSTACK+' '+jqROOTMENU+' div, '+jqSTACK+jqROOTMENU+' div,\n\
 '+jqSTACK+' '+jqROOTMENU+' a, '+jqSTACK+jqROOTMENU+' a {\n\
   margin: 0 !important;\n\
-  height: 11px !important;\n\
+  width: 100% !important;\n\
   padding: 12px 0 12px 40px !important;\n\
   font-size: 11px !important;\n\
 }\n\
