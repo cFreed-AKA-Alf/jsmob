@@ -446,6 +446,9 @@ Menus: REDUCED LAYOUT\n\
   margin: 8px 0 0 5px !important;\n\
   width: 0 !important;\n\
 }\n\
+'+jqROOTMENU+' {\n\
+  width: 100% !important;\n\
+}\n\
 /*\n\
 When %Stack, all %Menu components (%Rootmenu, %Submenu and their embedded\n\
 <li>, <div> and <a>) must remain independant of the original CSS */\n\
