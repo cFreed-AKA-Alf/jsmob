@@ -27,7 +27,7 @@ NOTE: floating elements may appear inside cols, but must be correctly cleared be
 NOTE: in a given block, *%Col_X* should be set for all or none col; defining it for some but not all cols would lead to unpredictable results
 - *%LM_X* and *%RM_X* classes define the left (respectively right) margin for a column; in full layout, these margins also decrease proportionaly with the viewport width, even if *%Fixed*; in reduced layout, they don't apply
 - a *%Auto* class points out a block where left/right margins will be computed automatically, using the space left free between block width and the sum of its child columns widths; in this case, any *%LM_X* and *%RM_X* are ignored in the child columns
-- a *%Pad_X* defines the padding-left and padding-right to apply to a *%Block* when in reduced layout
+- a *%Pad_X* class defines the padding-left and padding-right to apply to a *%Block* when in reduced layout
 
 
 IMPORTANT NOTES about cols width computation:
