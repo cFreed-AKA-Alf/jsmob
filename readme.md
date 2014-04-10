@@ -5,9 +5,10 @@ jsmob integration makes an existing site become responsive with a minimum HTML/C
 Needs jQuery (any version).
 
 For jsmob to work on a HTML page you must:
+- add a `<script type="text/javscript" src="path/to/jQuery.any.version.js">` in the `<head>` element, if not yet
 - add a `<script type="text/javscript" src="path/to/jsmob.js">` at the end of the `<head>` element (or at the end of the `<body>` element)
 - affect some class names, following the rules below
-- for multi-column parts of the page, drop any float/nest structure if needed (each column must simply be a direct child of its block container)
+- for multi-column parts of the page, drop any float/nest structure if needed (each column must simply be a direct child of its block container, as shown in the above example)
 
 HANDLING COLUMNS
 ----------------
@@ -26,12 +27,13 @@ NOTE: floating elements may appear inside cols, but must be correctly cleared be
 NOTE: in a given block, *%Col_X* should be set for all or none col; defining it for some but not all cols would lead to unpredictable results
 - *%LM_X* and *%RM_X* classes define the left (respectively right) margin for a column; in full layout, these margins also decrease proportionaly with the viewport width, even if *%Fixed*; in reduced layout, they don't apply
 - a *%Auto* class points out a block where left/right margins will be computed automatically, using the space left free between block width and the sum of its child columns widths; in this case, any *%LM_X* and *%RM_X* are ignored in the child columns
+- a *%Pad_X* defines the padding-left and padding-right applied to a *%Block* when in reduced layout
 
 
 IMPORTANT NOTES about cols width computation:
 - since col{display:inline-block;} is used in full layout, remember that adjacent columns margins will NOT collapse
 - the site CSS's has not to define any margin-left or -right for a *%Col*: these margins should always be set through *%LM_X* and *%RM_X* classes
-- at the opposite, the CSS's may freely define cols padding-left or -right; in full layout, their dimensions remain constant while viewport width varies; in reduced layout, they are dropped; the same applies to border-left or -right
+- at the opposite, the CSS's may freely define cols padding-left or -right, and border-left or -right; in full layout, their dimensions remain constant while viewport width varies; in reduced layout, they are dropped (but padding-left/-right may be applied, as defined by *%Pad_X*)
 - remember: take these paddings and borders in account when defining "X" in *%Width_X*
 
 ####HTML STRUCTURE EXAMPLE
@@ -98,6 +100,7 @@ For those classes which define dimensions or numbers, the "_" separator may be r
     %Main    |        |       |     |  x   |      |       |
     %LM_X    |        |       |  x  |      |      |       |
     %Opt     |        |   x   |  x  |  x   |   x  |   x   |
+    %Pad_X   |    x   |       |     |      |      |       |
     %RM_X    |        |       |  x  |      |      |       |
     %Width_X |    x   |   x   |  x  |      |      |   x   |
 
@@ -111,6 +114,7 @@ The following options are available:
 - *cssTimeout*=…   : … is the (ms) delay before launching window.resize() [see also CAVEAT]
 - *debug*=1        : some useful informations are displayed in the console
 - *liveshow*=1     : adds an indicator to each element having a class like *%Block*, *%Col*, *%Menu*, *%Zoom*; it displays real-time the current element's width, and its title summarizes its "%" classes
+- *padding*=…      : … is the (px) value for padding-left/-right of a block in reduced layout
 - *prefix*=…       : … is any string of your choice, which is substituted to "%"
 - *vscroll*=0      : suppress vertical scroll-bar (useful to simulate a mobile while on desktop)
 

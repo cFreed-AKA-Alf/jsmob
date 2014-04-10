@@ -19,12 +19,13 @@ var
     Col:    'rank',
     LM:     'leftMargin',
     //Min:    'minWidth',
+    Pad:    'padding',
     RM:     'rightMargin',
     Width:  'baseWidth',
   },
   _constants=[
     'Active', // applied to MNT when clicked down
-    'Auto', // user marker for a block to define auto margins
+    'Auto', // user marker for a block to set auto margins
     'Col', // user marker for a col
     'Block', // user marker for a block
     'Ddt', // Drop-down toggle button
@@ -44,11 +45,12 @@ var
   _params={
     baseWidth:1024, // default block width
     breakPoint:480, // not nul value -> default breakpoint value
-    cssTimeout:5, // 
-    debug:0, // 1 -> report informations to console
-    liveshow:0, // 1 -> live display elements dimensions
+    cssTimeout:5,   // 
+    debug:0,        // 1 -> report informations to console
+    liveshow:0,     // 1 -> live display elements dimensions
+    padding:3,      // default padding-left/-right in reduced layout
     prefix:'%',
-    vscroll:0, // 1 -> display vertical scroll-bar
+    vscroll:0,      // 1 -> display vertical scroll-bar
   },
   _templates={
     Block: function(element) {
@@ -135,8 +137,8 @@ $(document).ready(function() {
   1. generic values are hard-coded in "_params" object
   2. a query parameter supersedes the corresponding generic value (available
      for all params)
-  3. a %class in <body> supersedes any value above (only %Break_X and %Width_X
-     are allowed)
+  3. a %class in <body> supersedes any value above (only %Break_X, %Width_X and
+     %Pad_X are allowed)
   */
   getDims(document.getElementsByTagName('body')[0],_params);
   // resume configuration:
@@ -388,6 +390,10 @@ img'+jqZOOM+', '+jqZOOM+' img {\n\
 /*\n\
 Blocks and Cols: REDUCED LAYOUT\n\
 -------------------------------*/\n\
+'+jqBLOCK+jqSTACK+' {\n\
+    margin: 0 '+_params.padding+'px !important;\n\
+    width: auto !important;\n\
+}\n\
 '+jqSTACK+' '+jqCOL+' {\n\
   display: block !important;\n\
   left: 0 !important;\n\
