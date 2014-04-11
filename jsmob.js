@@ -9,9 +9,7 @@ Look at jsmob.md for details
 if(typeof $=='undefined'){$=jQuery.noConflict();}
 //=============================================================================
 var
-  _breakPoints={}, // registry built from %Block elements
   _blocks=[], // registry built from %Block elements
-  _menus=[], // registry built from %Menu elements
   _uniqueid=0; // used to get tickets for unique id's like "%Id<number>"
 var
   _classMap={ // classid in "%<classid>[_<dim>]" classname --> property id
@@ -77,11 +75,6 @@ var
       . LMPart/RMPart: like ownPart, based on Col.leftMargin/rightMargin
       . curWidth/curLM/curRM: computed when window.resize()
       */
-    },
-    Menu: function(element) {
-      this.id=element.id;
-      this.tag=element.tagName; // for further use
-      this.rootUl
     },
   };
 //=============================================================================
@@ -214,12 +207,6 @@ var process= function() { /*
     });
     // finally register block, and its breakpoint:
     _blocks.push(block);
-    /*
-    if(typeof _breakPoints[block.breakPoint]=='undefined') {
-      _breakPoints[block.breakPoint]=[];
-    }
-    _breakPoints[block.breakPoint].push(block.id);
-    */
   });
   /*
   Set fixed constraints
