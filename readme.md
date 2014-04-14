@@ -6,7 +6,8 @@ Needs jQuery (any version).
 
 For jsmob to work on a HTML page you must:
 - add a `<script type="text/javscript" src="path/to/jQuery.any.version.js">` in the `<head>` element, if not yet
-- add a `<script type="text/javscript" src="path/to/jsmob.js">` at the end of the `<head>` element (or at the end of the `<body>` element)
+- add a `<script type="text/javscript" src="path/to/jsmob.js">` at the end of the `<head>` element (or at the end of the `<body>` element)  
+  NOTA: in production, you may choose to select `jsmob.bare.js` or `jsmob.min.js` instead; those version both don't include some development helpers (see CONFIGURATION OPTIONS below)
 - affect some class names, following the rules below
 - for multi-column parts of the page, drop any float/nest structure if needed (each column must simply be a direct child of its block container, as shown in the example below)
 
@@ -108,17 +109,20 @@ For those classes which define dimensions or numbers, the "_" separator may be r
 Options may be set using query parameters in the path of the `<script>` tag used to include jsmob, i.e.:
   `<script type="text/javascript" src="path/to/jsmob.js?opt1=val1&opt2=val2…">`
 
-The following options are available:
+The following options are available in any jsmob version:
 - *baseWidth*=…    : … is the (px) value for the default block width
 - *breakPoint*=…   : … is the (px) value for the default breakpoint
 - *cssTimeout*=…   : … is the (ms) delay before launching window.resize() [see also CAVEAT]
-- *debug*=1        : some useful informations are displayed in the console
-- *liveshow*=1     : adds an indicator to each element having a class like *%Block*, *%Col*, *%Menu*, *%Zoom*; it displays real-time the current element's width, and its title summarizes its "%" classes
 - *padding*=…      : … is the (px) value for padding-left/-right of a block in reduced layout
 - *prefix*=…       : … is any string of your choice, which is substituted to "%"
 - *vscroll*=0      : suppress vertical scroll-bar (useful to simulate a mobile while on desktop)
+
+These options are available in jsmob.js version only:
+- *debug*=1        : some useful informations are displayed in the console
+- *liveshow*=1     : adds an indicator to each element having a class like *%Block*, *%Col*, *%Menu*, *%Zoom*; it displays real-time the current element's width, and its title summarizes its "%" classes
 
 ####CAVEAT
 Depending on the complexity of the native CSS and/or the number and weight of images included, you may observe some layout inconsistencies (e.g.: column width set to a greater value than stated by %Width!).
 It comes from the fact that the current value of cssTimeout may be too short to allow browser to achieve CSS analysis before jsmob begins %classes analysis.
 A notable issue happens when using em's to define padding-left/right: then jsmob may begin analyzing when the final font-size has not been defined yet.
+You may consider to increase the *cssTimeout* parameter value till all work fine.

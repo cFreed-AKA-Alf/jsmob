@@ -165,7 +165,7 @@ var process= function() { /*
   -----------------------------------------------------------------------------
   First looks for .%Block elements in the entire document.
   For each block found, looks for contained .%Col elements, and uses the other
-  ".%…" classes to register columns characteristics.
+  ".%ï¿½" classes to register columns characteristics.
   Then generates the appropriate base CSS and finally activates the responsive
   mechanism.
   */
@@ -261,19 +261,7 @@ var process= function() { /*
       }
     }
     // finally set CSS:
-    $('head').append('<style>'+fullCSS+'<\/style>');//<!--
-    /*
-    Prepare live display indicators, if required */
-    if(_params.liveshow) {
-      createLWD($('body'),'body');
-      for(var blockNo in _blocks) {
-        createLWD($('#'+_blocks[blockNo].id),'block',{blockNo:blockNo});
-        for(var colNo in _blocks[blockNo].cols) {
-          createLWD($('#'+_blocks[blockNo].cols[colNo].id),'col',
-            {blockNo:blockNo,colNo:colNo});
-        }
-      }
-    }//-->
+    $('head').append('<style>'+fullCSS+'<\/style>');
   }
   /*
   Process menus (%Menu)
@@ -330,20 +318,12 @@ var process= function() { /*
         prepare_img(this)
       });
     }
-  });//<!--
-/*
-  Resume structure
-  -----------------------------------------------------------------------------
-  */
-   if(_params.debug) {
-    consoleGroup('Found '+_blocks.length+' block(s)',_blocks)
-  }//-->
+  });
 /*
   Bind responsive mechanism
   -----------------------------------------------------------------------------
   */
-  $(window).resize(windowResize);//<!--
-  $(document).scroll(liveWidthDisplay);//-->
+  $(window).resize(windowResize);
   // wait for CSS init, or false dims computation:
   setTimeout('$(window).resize()',_params.cssTimeout);
 };
@@ -479,37 +459,7 @@ Anything %Opt: REDUCED LAYOUT\n\
 '+jqSTACK+' '+jqOPT+','+jqSTACK+jqOPT+',\n\
 '+jqSTACK+' '+jqOPT+' img,'+jqSTACK+jqOPT+' img,'+jqSTACK+' img'+jqOPT+' {\n\
   display: none !important;\n\
-}\n';//<!--
-  if(_params.liveshow) {
-    CSS+='\
-/*\n\
-Live indicators (when liveshow=1)\n\
-----------------------------------*/\n\
-'+jqLWD+' {\n\
-  position: fixed;\n\
-  border-radius: 3px;\n\
-  background-color: #f66;\n\
-  color: #fff;\n\
-  font-weight: bold;\n\
-  padding: .2em .5em;\n\
-  opacity: .7;\n\
-  z-index: 9999;\n\
-}\n\
-'+jqLWD+' span {\n\
-  color: #444;\n\
-  font-weight: bold;\n\
-}\n\
-#\\'+LWD+' {\n\
-  position: fixed;\n\
-  border-radius: 5px;\n\
-  background-color: #ffc;\n\
-  padding: 0 1em;\n\
-  z-index: 999;\n\
-}\n\
-#\\'+LWD+' * {\n\
-  font-family: "Courier New";\n\
 }\n';
-}//-->
   if(!_params.vscroll) {
     CSS+='\
 /*\n\
@@ -544,36 +494,7 @@ var colCSS= function(col) { /* obsolete
 #'+col.id+' {\n\
   width: 50px; /* to temporarily supersede any #... specification */\n\
 }\n';
-};//<!--
-//=============================================================================
-var consoleGroup= function(title,data) { /*
-    ------------
-*/
-  if(!window.console) {
-    return;
-  }
-  if(arguments.length<2) { // title not provided, will omit grouping
-    data=title;
-    title='';
-  }
-  if(title) {
-    console.group(title);
-  }
-  switch(typeof data) {
-    case 'object':
-      if($.isArray(data)) {
-        console.table(data);
-      } else {
-        console.dir(data);
-      }
-      break;
-    default:
-      console.info(data);
-  }
-  if(title) {
-    console.groupEnd();
-  }
-};//-->
+};
 //=============================================================================
 var createDDT= function($element) { /*
     ---------
@@ -590,9 +511,7 @@ Creates a drop-down toggle button embedded into element.
       var submenu=$(event.target).closest('li').find(jqSUBMENU);
       submenu.toggleClass(OPEN);
       // hide any other %Open %Submenu:
-      $(jqOPEN).not(submenu).removeClass(OPEN);//<!--
-      // adjust LWD's position:
-      setTimeout(liveWidthDisplay,_params.cssTimeout);//-->
+      $(jqOPEN).not(submenu).removeClass(OPEN);
       return false; // avoid following link, if embedded in <a>
     })
   );
@@ -604,43 +523,7 @@ Sets element.id if not yet, and returns a new object based on template.
 */
   enforceId(element);
   return new _templates[template](element);
-};//<!--
-//=============================================================================
-var createLWD= function(target,ident,ref) { /*
-    ---------
-Creates a Live Width Display <div> associated to target, which will real-time:
-. follow the position of the target
-. display the target width
-In addition, if "ref" is defined, click event is binded to liveDetails(), using
-ref data, which should look like {blockNo,colNo}
-*/
-  // create a global container, if not yet:
-  // (avoids Firebug consuming time for display when modifying window size)
-  if(!$('#'+safePREFIX+safePREFIX).length) {
-    $('body').append($('<div \/>').attr('id',PREFIX+PREFIX));
-  }
-  // create the LWD itself (id: %<target.id>, class: %LWD):
-  var lwd=$('<div \/>').appendTo($('#'+safePREFIX+safePREFIX));
-  lwd
-    .addClass(LWD)
-    .css({cursor:(ref?'pointer':'help')})
-    .html(ident+' <span \/>') // (place holder for target current size)
-    .attr({
-      id:           PREFIX+target[0].id,
-      'data-ident': ident,
-      title:        function() {
-        with(target[0]) {
-          var classes=className.match(new RegExp(regPREFIX+'[^ ]+','g'));
-          return (tagName+(!!classes?('#'+id+'.'+classes.join(' ')):''));
-        }
-      }
-    });
-  // link target to its jsmob definition, if required:
-  if(ref) {
-    target.attr({'data-block':ref.blockNo,'data-col':ref.colNo});
-    lwd.click(liveDetails);
-  }
-};//-->
+};
 //=============================================================================
 var createMNT= function(ul,parentBlockId) { /*
     ---------
@@ -659,28 +542,10 @@ Creates a main-nav toggle button (position fixed).
         window.scrollTo(0,0); // back to menu
       } else {
         $(jqOPEN).removeClass(OPEN); // hide any %Submenu
-      }//<!--
-      // adjust LWD's position:
-      setTimeout(liveWidthDisplay,_params.cssTimeout);//-->
+      }
     })
   );
-};//<!--
-//=============================================================================
-var debug= function(block,title) { /* obsolete
-    =====
-*/
-  var data=[];
-  $('#'+block.id+' .\\%Col').each(function() {
-    data.push({
-      id:this.id,
-      posTop:$(this).position().top,
-      posLeft:$(this).position().left
-        -Math.round(parseFloat(getComputedStyle(this).left)),
-      outWidth:$(this).outerWidth(true),
-    });
-  });
-  consoleGroup(title+' (inWidth:'+$('#'+block.id).innerWidth()+')',data);
-};//-->
+};
 //=============================================================================
 var enforceId= function(element) { /*
     ---------
@@ -720,75 +585,7 @@ Extracts dim classes from element, then for each one:
       }
     }
   }
-};//<!--
-//=============================================================================
-var liveDetails= function() { /*
-    -----------
-*/
-  $('#\\'+LWD).remove();
-  // display panel with LWD element title:
-  var panel=$('<div \/>').appendTo($('#'+safePREFIX+safePREFIX));
-  panel.attr('id',LWD)
-    .css({
-      top:($(this).position().top+$(this).outerHeight())+'px',
-      left:$(this).position().left+'px'
-    })
-    .append('<p>'+this.title+'<\/p><hr />')
-    .click(function() {$('#\\'+LWD).remove();});
-  // display detailed information depending on target type:
-  var target=document.getElementById(this.id.substr(1));
-  var block=_blocks[target.dataset['block']];
-  switch(type=this.innerHTML.match(/^([^ ]+) /)[1]) {
-    case 'block':
-      data=
-        JSON.stringify(block,function(k,v){return (k=='cols'?undefined:v);},2);
-      break;
-    case 'col':
-      var col=block.cols[target.dataset['col']];
-      data=JSON.stringify(col,null,2);
-      break;
-  }
-  panel.append($('<pre />').html(data));
-};//-->//<!--
-//=============================================================================
-var liveWidthDisplay= function() { /*
-    ----------------
-*/
-  if(_params.liveshow) {
-    $(jqLWD).each(function() {
-      // get target id from LWD id (%<target.id>):
-      var target=$(document.getElementById(this.id.substr(1)));
-      // (don't use jQuery('#id'): avoids looking for special chars)
-      if(!target.length) {
-        target=$('body');
-      }
-      $(this).toggle(target.is(':visible'));
-      $(this).find('span').html(target.outerWidth());
-      switch(this.dataset.ident) {
-        case 'body': // top/center
-          $(this).css({top:0,left:'50%'});
-          break;
-        case 'block': // top/right
-          $(this).offset({
-            top:target[0].offsetTop,
-            left:target[0].offsetLeft+target.outerWidth()-$(this).outerWidth(),
-          });
-          break;
-        case 'col': // top/left
-          $(this).offset(target.offset());
-          break;
-        case 'zoom': // center/center
-          $(this).offset({
-            top:target.offset().top
-              +(target.outerHeight()-$(this).outerHeight())/2,
-            left:target.offset().left
-              +(target.outerWidth()-$(this).outerWidth())/2,
-          });
-          break;
-      }
-    });
-  }
-};//-->
+};
 //=============================================================================
 var windowResize= function() { /*
     ------------
@@ -866,12 +663,7 @@ Then for main %Menu, hide/displays MNT depending on situation against breakpoint
       } else {
         // left-shift col by already right-shifted ones:
         left=curShift;
-      }//<!--
-      /*
-      if(_params.debug) {
-        debug(block,'before col '+col.id);
       }
-    *///-->
       $('#'+col.id)
         .css({ // set element.style
           //top:          0,
@@ -880,12 +672,7 @@ Then for main %Menu, hide/displays MNT depending on situation against breakpoint
           marginLeft:   col.curLM+'px',
           marginRight:  col.curRM+'px',
         });
-    }//<!--
-    /*
-    if(_params.debug) {
-      debug(block,'after col '+col.id);
     }
-    *///-->
   }
   /*
   Process menus
@@ -902,12 +689,7 @@ Then for main %Menu, hide/displays MNT depending on situation against breakpoint
       .toggle(!stack || $(jqMNT).hasClass(ACTIVE));
   } catch(e) {
     // no MNT created
-  }//<!--
-  /*
-  Live display elements sizes, if required
-  -----------------------------------------*/
-  // adjust LWD's position:
-  setTimeout(liveWidthDisplay,_params.cssTimeout);//-->
+  }
 };
 //=============================================================================
 }())
