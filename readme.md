@@ -28,7 +28,7 @@ NOTE: floating elements may appear inside cols, but must be correctly cleared be
 NOTE: in a given block, *%Col_X* should be set for all or none col; defining it for some but not all cols would lead to unpredictable results
 - *%LM_X* and *%RM_X* classes define the left (respectively right) margin for a column; in full layout, these margins also decrease proportionaly with the viewport width, even if *%Fixed*; in reduced layout, they don't apply
 - a *%Auto* class points out a block where left/right margins will be computed automatically, using the space left free between block width and the sum of its child columns widths; in this case, any *%LM_X* and *%RM_X* are ignored in the child columns
-- a *%Pad_X* class defines the padding-left and padding-right to apply to a *%Block* when in reduced layout
+- a *%Pad_X* class defines the padding-left and padding-right to apply to a *%Block* when in reduced layout; may also be applied to the `<body>` element, as default value for any block having no *%Pad_X*
 
 
 IMPORTANT NOTES about cols width computation:
@@ -66,11 +66,14 @@ HANDLING MENUS
 A *%Menu* class points out a menu[-wrapper] element which may be, either:
 - a `<ul>` tag, which is the involved menu base
 - a direct or indirect parent of the involved menu base `<ul>`
-In any case, this `<ul>` must be the only 1st level `<ul>` in the scope of a *%Menu* element.
-If it is not embedded in a *%Block* element, it will automatically become itself a block, whose breakpoint will be set to the default one (see above).  
-A *%Main* class may be added to one (and only one) *%Menu*: in reduced layout, the menu is  replaced by a "commander" button like <span style="font-weight:1.5em;">**&#9776;**</span>, which toggles the 1st level options (stacked when visible).  
-For other menus, 1st level options remain always visible.  
-In any case, each 1st level option have a drop-down toggle button in front of it when it has 2nd level options.  
+
+In the latter case, only the first encountered 1st-level `<ul>` in the scope of the *%Menu* element will be considered.  
+If it is not embedded in a *%Block* element, a *%Menuµ element will automatically become itself a block, whose breakpoint will be set to the default one (see above).
+
+A *%Main* class may be added to one (and only one) *%Menu*: in reduced layout, this menu is  replaced by a "commander" button like <span style="font-size:1.5em; font-weight:bold;">**&#9776;**</span>, which toggles the 1st level options visibility (options are stacked when visible).  
+For other menus, 1st level options remain always visible.
+
+In any case, each 1st level option have a drop-down toggle button in front of it when it has 2nd-level options.  
 Main menu is intended for a horizontal menu, while simple menu behaviour is particularly suitable for vertical menus.  
 CAUTION: a menu may have no more than 2 levels.
 
@@ -87,7 +90,7 @@ A *%Opt* class points out an element (block, image, menu-wrapper) which is consi
 SYNTAX RULES
 ------------
 ####CLASS NAMES
-The "%" prefix, used by default, may be replaced by any prefix of your choice.  
+The "%" prefix, used by default, may be replaced by any prefix of your choice (see CONFIGURATION OPTIONS below).  
 For those classes which define dimensions or numbers, the "_" separator may be replaced by "-", or omitted; so *%Col-2* and *%Col2* are equivalent to *%Col_2*.
 
 ####CLASSES USAGE SUMMARY
