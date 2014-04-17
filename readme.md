@@ -68,12 +68,12 @@ A *%Menu* class points out a menu[-wrapper] element which may be, either:
 - a direct or indirect parent of the involved menu base `<ul>`
 
 In the latter case, only the first encountered 1st-level `<ul>` in the scope of the *%Menu* element will be considered.  
-If it is not embedded in a *%Block* element, a *%Menuµ element will automatically become itself a block, whose breakpoint will be set to the default one (see above).
+If it is not embedded in a *%Block* element, a *%Menu* element will automatically become itself a block, whose breakpoint will be set to the default one (see above).
 
-A *%Main* class may be added to one (and only one) *%Menu*: in reduced layout, this menu is  replaced by a "commander" button like <span style="font-size:1.5em; font-weight:bold;">**&#9776;**</span>, which toggles the 1st level options visibility (options are stacked when visible).  
+A *%Main* class may be added to one (and only one) *%Menu*: in reduced layout, this menu is  replaced by a "commander" button like <span style="font-size:2em; font-weight:bold;">**&#9776;**</span>, which toggles the 1st level options visibility (options are stacked when visible).  
 For other menus, 1st level options remain always visible.
 
-In any case, each 1st level option have a drop-down toggle button in front of it when it has 2nd-level options.  
+In any case, each 1st-level option have a drop-down toggle button in front of it when it has 2nd-level options.  
 Main menu is intended for a horizontal menu, while simple menu behaviour is particularly suitable for vertical menus.  
 CAUTION: a menu may have no more than 2 levels.
 
@@ -125,7 +125,6 @@ These options are available in jsmob.js version only:
 - *liveshow*=1     : adds an indicator to each element having a class like *%Block*, *%Col*, *%Menu*, *%Zoom*; it displays real-time the current element's width, and its title summarizes its "%" classes
 
 ####CAVEAT
-Depending on the complexity of the native CSS and/or the number and weight of images included, you may observe some layout inconsistencies (e.g.: column width set to a greater value than stated by %Width!).
-It comes from the fact that the current value of cssTimeout may be too short to allow browser to achieve CSS analysis before jsmob begins %classes analysis.
-A notable issue happens when using em's to define padding-left/right: then jsmob may begin analyzing when the final font-size has not been defined yet.
+Depending on the complexity of the native CSS and/or the number and weight of images included, you may observe some layout inconsistencies (e.g.: column width set to a greater value than stated by %Width!).  
+It comes from the fact that the current value of cssTimeout may be too short to allow browser to achieve CSS analysis before jsmob begins %classes analysis. A notable issue happens when using em's to define padding-left/right: then jsmob may begin analyzing when the final font-size has not been defined yet.  
 You may consider to increase the *cssTimeout* parameter value till all work fine.
