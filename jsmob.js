@@ -473,6 +473,12 @@ Set <div> and <a> hard-fixed dims, ensuring a correct positioning of DDT\'s */\n
   display: inline !important;\n\
 }\n\
 /*\n\
+Tables: REDUCED LAYOUT\n\
+-----------------------*/\n\
+'+jqSTACK+' table {\n\
+  word-break: break-all !important;\n\
+}\n\
+/*\n\
 Anything %Opt: REDUCED LAYOUT\n\
 ------------------------------\n\
 >>> KEEP this specification LAST! (must supersede any other one) */\n\
