@@ -655,7 +655,6 @@ Creates a main-nav toggle button (position fixed).
   enforceId(ul); // ensure ul has an id
   $('body').append(
     $('<img \/>')
-    //.addClass(MNT).html('&#9776;').css({display:'none'})
     .addClass(MNT).css({display:'none'})
     .attr({
       alt:'',
