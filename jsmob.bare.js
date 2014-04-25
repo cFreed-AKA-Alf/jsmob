@@ -394,7 +394,7 @@ Menus: REDUCED LAYOUT\n\
 }\n\
 '+jqMNT+jqACTIVE+' {\n\
   box-shadow: 1px 1px 2px #000 inset;\n\
-  background-color: #eee;\n\
+  background-color: #aaa;\n\
   color: #444;\n\
 }\n\
 /* For DDT button, thanks to https://drupal.org/project/rubix-responsive-theme */\n\
@@ -451,6 +451,12 @@ Set <div> and <a> hard-fixed dims, ensuring a correct positioning of DDT\'s */\n
 }\n\
 '+jqSTACK+' '+jqDDT+' {\n\
   display: inline !important;\n\
+}\n\
+/*\n\
+Tables: REDUCED LAYOUT\n\
+-----------------------*/\n\
+'+jqSTACK+' table {\n\
+  word-break: break-all !important;\n\
 }\n\
 /*\n\
 Anything %Opt: REDUCED LAYOUT\n\
@@ -529,11 +535,16 @@ var createMNT= function(ul,parentBlockId) { /*
     ---------
 Creates a main-nav toggle button (position fixed).
  */
- enforceId(ul); // ensure ul has an id
+  enforceId(ul); // ensure ul has an id
   $('body').append(
-    $('<div \/>')
-    .addClass(MNT).html('&#9776;').css({display:'none'})
-    .attr({'data-menu':ul.id,'data-block':parentBlockId})
+    $('<img \/>')
+    .addClass(MNT).css({display:'none'})
+    .attr({
+      alt:'',
+      src:'data:image/gif;base64,\ R0lGODlhEwATAJEDAIuLi////8HBwf///yH5BAEAAAMALAAAAAATABMAAAIrhI6pZ+EPoxNmWQSG3rz7D4biSJZcdVmNxD5UemXmTNe2icLJ2rKvrgAUAAA7',
+      'data-menu':ul.id,
+      'data-block':parentBlockId
+    })
     // when click, toggle menu:
     .click(function(event) {
       $(jqMENU+jqMAIN).toggle();
