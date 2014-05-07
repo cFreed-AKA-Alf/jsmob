@@ -115,6 +115,7 @@ Options may be set using query parameters in the path of the `<script>` tag used
 The following options are available in any jsmob version:
 - *baseWidth*=…    : … is the (px) value for the default block width
 - *breakPoint*=…   : … is the (px) value for the default breakpoint
+- *blindBuild*=1   : hide page while building (avoids showing build steps)
 - *cssTimeout*=…   : … is the (ms) delay before launching window.resize() [see also CAVEAT]
 - *padding*=…      : … is the (px) value for padding-left/-right of a block in reduced layout
 - *prefix*=…       : … is any string of your choice, which is substituted to "%"

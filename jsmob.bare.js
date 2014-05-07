@@ -41,14 +41,14 @@ var
     'Zoom', // user marker for an <img> to follow responsive mechanism
   ],
   _params={
+    // defaults:
     baseWidth:1024, // default block width
-    breakPoint:480, // not nul value -> default breakpoint value
-    cssTimeout:5,   // 
-    debug:0,        // 1 -> report informations to console
-    liveshow:0,     // 1 -> live display elements dimensions
+    breakPoint:480, // default breakpoint value
     padding:3,      // default padding-left/-right in reduced layout
-    prefix:'%',
-    vscroll:0,      // 1 -> display vertical scroll-bar
+    // production:
+    blindBuild:0,   // 1 -> hide page while building
+    cssTimeout:5,   // 
+    prefix:'%',     //  any string
   },
   _templates={
     Block: function(element) {
@@ -78,11 +78,34 @@ var
     },
   };
 //=============================================================================
+/*
+Prepare constants
+------------------*/
+var PREFIX=_params.prefix;
+// escape any non-standard character for jQuery selectors:
+var safePREFIX=PREFIX.replace(/([^-_0-9A-Za-z])/g,'\\$1');
+/* escape any non-standard character for RegExp:
+Each prefix character is embedded in a class (e.g. "abc" becomes "[a][b][c]"),
+so we have only to escape significant characters inside this context.
+*/
+var regPREFIX='';
+for(var i=0,n=PREFIX.length;i<n;i++) {
+  regPREFIX+='['+PREFIX[i].replace(/([\^\]\-\\])/,'\\$1')+']';
+}
+var evals='';
+for(var i in _constants) {
+  var name=_constants[i];
+  var cName=name.toUpperCase();
+  evals+='var '+cName+'=PREFIX+"'+name+'";jq'+cName+'="."+safePREFIX+"'+name+'";';
+}
+eval(evals);
+/*
+Build page
+-----------*/
 $(document).ready(function() {
   /*
   Get query parameters
-  --------------------
-  */
+  ---------------------*/
   try { // use query params (if any) in <script> src attribute to update _params:
     var query_params=
       $('script[src*=jsmob\\.]').attr('src').match(/[^?=&]+=[^&=]+/g);
@@ -97,33 +120,15 @@ $(document).ready(function() {
   } catch(e) {
     // no query params defined
   }
-  /*** special test feature ***/
-    // remove webtools-based shell, but ONLY AFTER getting params
-    $('#js_hidden_part').add($('#js_hidden_part').siblings('script,noscript'))
-      .remove();
-  /* ************************ */
   /*
-  Prepare constants (don't use "var", so they will be global)
-  -----------------
-  */
-  PREFIX=_params.prefix;
-  // escape any non-standard character for jQuery selectors:
-  safePREFIX=PREFIX.replace(/([^-_0-9A-Za-z])/g,'\\$1');
-  /* escape any non-standard character for RegExp:
-  Each prefix character is embedded in a class (e.g. "abc" becomes "[a][b][c]"),
-  so we have only to escape significant characters inside this context.
-  */
-  regPREFIX='';
-  for(var i=0,n=PREFIX.length;i<n;i++) {
-    regPREFIX+='['+PREFIX[i].replace(/([\^\]\-\\])/,'\\$1')+']';
+  Hide building phase if required
+  --------------------------------*/
+  if(_params.blindBuild) {
+    $('body').append($('<div id="jsmob-cache" />').css({
+      position:'fixed',width:'100%',height:'100%',top:0,left:0,
+      zIndex:999999,backgroundColor:'#fff'
+    }));
   }
-  var evals='';
-  for(var i in _constants) {
-    var name=_constants[i];
-    var cName=name.toUpperCase();
-    evals+=cName+'=PREFIX+"'+name+'";jq'+cName+'="."+safePREFIX+"'+name+'";';
-  }
-  eval(evals);
    /*
   Set final default values
   ------------------------
@@ -140,15 +145,12 @@ $(document).ready(function() {
   }
   /*
   Launch analysis delayed, for CSS to be fully executed first
-  -----------------------------------------------------------
-  */
+  ------------------------------------------------------------*/
   setTimeout(process,_params.cssTimeout);
 });
 //=============================================================================
 var process= function() { /*
     -------
-*/
-  /*
   Preprocess menus (%Menu)
   -----------------------------------------------------------------------------
   Menus are preprocessed first, since they may become also blocks, and so must
@@ -237,8 +239,6 @@ var process= function() { /*
       }
       for(var colNo in block.cols) {
         var col=block.cols[colNo];
-        // generate base CSS for this col:
-        //fullCSS+=colCSS(col);
         // compute independant col depending data:
         if(!col.fixed) {
           // variable col, compute its fraction of available not-fixed space:
@@ -257,7 +257,7 @@ var process= function() { /*
         col.LMPart=col.leftMargin/availWidth;
         col.RMPart=col.rightMargin/availWidth;
         // ensure to drop any whitespace before element (inline-block):
-        fixTag(block,col);
+        //fixTag(block,col); ///
       }
     }
     // finally set CSS:
@@ -493,15 +493,6 @@ It is intended to allow defining different breakPoint's for different blocks.
 }\n';
 };
 //=============================================================================
-var colCSS= function(col) { /* obsolete
-    ------
-*/
-  return '\
-#'+col.id+' {\n\
-  width: 50px; /* to temporarily supersede any #... specification */\n\
-}\n';
-};
-//=============================================================================
 var createDDT= function($element) { /*
     ---------
 Creates a drop-down toggle button embedded into element.
@@ -701,6 +692,10 @@ Then for main %Menu, hide/displays MNT depending on situation against breakpoint
   } catch(e) {
     // no MNT created
   }
+  /*
+  Finally drop cache if any
+  --------------------------*/
+  $('#jsmob-cache').remove();
 };
 //=============================================================================
 }())
