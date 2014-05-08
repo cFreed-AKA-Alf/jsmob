@@ -1,6 +1,6 @@
 jsmob
 =====
-A JS add-on to adjust layout on mobile devices.  
+A JS add-on to adjust layout on mobile devices, including the ability to react when toggling between portrait and landscape.  
 jsmob integration makes an existing site become responsive with a minimum HTML/CSS changes.  
 Needs jQuery (any version).
 

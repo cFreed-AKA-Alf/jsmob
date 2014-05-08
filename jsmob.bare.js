@@ -3,7 +3,7 @@
 # https://joinup.ec.europa.eu/system/files/FR/EUPL v.1.1 - Licence.pdf #
 #---------------------------------------------------------------------*/
 /*
-Look at jsmob.md for details
+Look at jsmob/readme.md for details
 */
 (function() {
 if(typeof $=='undefined'){$=jQuery.noConflict();}
@@ -144,9 +144,9 @@ $(document).ready(function() {
     consoleGroup('Configuration',_params);
   }
   /*
-  Launch analysis delayed, for CSS to be fully executed first
-  ------------------------------------------------------------*/
-  setTimeout(process,_params.cssTimeout);
+  Launch analysis, ensuring external images and CSS loaded
+  ---------------------------------------------------------*/
+  $(window).bind('load',process); // (use syntax available in every jq version)
 });
 //=============================================================================
 var process= function() { /*
