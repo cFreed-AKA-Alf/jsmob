@@ -453,6 +453,15 @@ Set <div> and <a> hard-fixed dims, ensuring a correct positioning of DDT\'s */\n
   display: inline !important;\n\
 }\n\
 /*\n\
+Input: REDUCED LAYOUT\n\
+-----------------------*/\n\
+'+jqSTACK+' select {\n\
+  min-height: 24px !important;\n\
+}\n\
+'+jqSTACK+' input {\n\
+  min-height: 20px !important;\n\
+}\n\
+/*\n\
 Tables: REDUCED LAYOUT\n\
 -----------------------*/\n\
 '+jqSTACK+' table {\n\
