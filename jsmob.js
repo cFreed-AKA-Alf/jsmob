@@ -32,22 +32,24 @@ var
     'LWD', // Live width display
     'Main', // user marker for a main menu
     'Menu', // user marker for a menu-wrapper
+    'MenuOption', // applied to any menu option to simplify click-dispatch
     'Mnt', // Main-nav toggle button
     'Open', // applied to a submenu when currently visible
     'Opt', // user marker for an optional element (dropped in reduced layout)
-    'Rootmenu', // applied to root <ul>  to simplfy CSS specifs addressing
+    'Rootmenu', // applied to root <ul> to simplfy CSS specifs addressing
     'Stack', // applied to a block when in reduced layout
     'Submenu', // applied to any <ul> which is not the root one
     'Zoom', // user marker for an <img> to follow responsive mechanism
   ],
   _params={
     // defaults:
-    baseWidth:1024, // default block width
-    breakPoint:480, // default breakpoint value
-    padding:3,      // default padding-left/-right in reduced layout
-    // production:
+    baseWidth:1024, // (px) default block width
+    breakPoint:480, // (px) default breakpoint
+    padding:0,      // (px) default padding-left/-right in reduced layout
+    // production options:
     blindBuild:0,   // 1 -> hide page while building
-    cssTimeout:5,   // 
+    cssTimeout:5,   // (ms) delay for CSS to apply before processing
+    hoverClick:0,   // 1 -> click a menu-option emulates hover (inhibits links)
     prefix:'%',     //  any string//<!--
     // dev options:
     debug:0,        // 1 -> report informations to console
@@ -299,23 +301,47 @@ var process= function() { /*
       menu (the %Menu wrapper should not contain any other 1st level <ul>) */
     var rootUl=$(this).is('ul')?$(this):$(this).find('ul:first');
     rootUl.addClass(ROOTMENU); // (to simplify CSS specifs addressing)
+    // In any case, prepare %Stack situation:
+    rootUl.children('li').children('ul').each(function() {
+      // (double children() above: since only 2 levels are allowed)
+      $(this).addClass(SUBMENU); // will be hidden when %Stack, unless %Open
+      if(!_params.hoverClick) {
+        createDDT($(this).siblings('div,a'));
+      }
+    });
+    // Special processing for %Main:
     if($(this).hasClass(MAIN)) {
       if(main) { // a main menu has been already defined, deny this one
         console.warn(
           '%Menu%Main defined more than once, toggled to simple menu');
-      } else { // create a main-nav toggle button for this menu
+      } else {
+        // create a main-nav toggle (MNT) button for this menu:
         main=true;
         var parentBlock=$(this).closest(jqBLOCK)[0];
         enforceId(parentBlock);
         createMNT(rootUl[0],parentBlock.id);
       }
     }
-    rootUl.find('ul').each(function() { // (only 2 levels are allowed ***)
-      $(this).addClass(SUBMENU); // will be hidden when %Stack, unless %Open
-      createDDT($(this).prev(/* should be <div> or <a> */));
-    });
   });
-   /*
+  /*
+  When hoverClick=on, bind click on options to substitue hover
+  (useful if mouse not present when in full layout) */
+  if(_params.hoverClick) {
+    // flag any menu option, add a down-triangle logo:
+    $(jqSUBMENU).siblings('div,a').addClass(MENUOPTION)
+    .append('&nbsp;&nbsp;&#9660;');
+    // bind click everywhere to dispatch between menu option and anything else:
+    $(document).click(function(event) {
+      var submenu=$(event.target).closest('li').find(jqSUBMENU);
+      // hide any other %Open %Submenu:
+      $(jqOPEN).not(submenu).removeClass(OPEN);
+      if($(event.target).hasClass(MENUOPTION)) {
+        submenu.toggleClass(OPEN); // toggle current submenu
+        return false; // CAUTION: links are inhibited!
+      }
+    });
+  }
+ /*
   Process images (%Zoom)
   -----------------------------------------------------------------------------
   Looks for %Zoom elements: each one may be <img> itself, or contain <img>'s.
@@ -367,7 +393,7 @@ Blocks and Cols defaults: FULL LAYOUT\n\
 img'+jqZOOM+', '+jqZOOM+' img {\n\
   width: 100% !important; /* supersedes any existing width definition */\n\
 }\n\
-'+jqBLOCK+'>img'+jqZOOM+', '+jqBLOCK+jqZOOM+'>img {\n\
+'+jqBLOCK+' > img'+jqZOOM+', '+jqBLOCK+jqZOOM+' > img {\n\
   display: block !important; /* when <img>\'s parent has position:relative */\n\
 }\n\
 '+jqBLOCK+' {\n\
@@ -385,7 +411,7 @@ img'+jqZOOM+', '+jqZOOM+' img {\n\
 }\n\
 /*\n\
 Blocks and Cols: REDUCED LAYOUT\n\
--------------------------------*/\n\
+--------------------------------*/\n\
 '+jqBLOCK+jqSTACK+' {\n\
     margin: 0 '+_params.padding+'px !important;\n\
     width: auto !important;\n\
@@ -439,7 +465,7 @@ Menus: REDUCED LAYOUT\n\
   z-index: 9999;\n\
   cursor: pointer;\n\
 }\n\
-'+jqDDT+'>span {\n\
+'+jqDDT+' > span {\n\
   border-left: 5px solid rgba(0, 0, 0, 0) !important;\n\
   border-right: 5px solid rgba(0, 0, 0, 0) !important;\n\
   border-top: 5px solid #aaa !important;\n\
@@ -463,12 +489,12 @@ When %Stack, all %Menu components (%Rootmenu, %Submenu and their embedded\n\
   padding: 0 !important;\n\
 }\n\
 /*\n\
-Set <div> and <a> hard-fixed dims, ensuring a correct positioning of DDT\'s */\n\
+Set <div> and <a> hard-fixed dims, ensuring correct positioning of DDT\'s, if any */\n\
 '+jqSTACK+' '+jqROOTMENU+' div, '+jqSTACK+jqROOTMENU+' div,\n\
 '+jqSTACK+' '+jqROOTMENU+' a, '+jqSTACK+jqROOTMENU+' a {\n\
   margin: 0 !important;\n\
   width: 100% !important;\n\
-  padding: 12px 0 12px 40px !important;\n\
+  padding: 12px 0 12px '+(_params.hoverClick?12:40)+'px !important;\n\
   font-size: 11px !important;\n\
 }\n\
 '+jqSTACK+' '+jqSUBMENU+' {\n\
@@ -483,7 +509,7 @@ Set <div> and <a> hard-fixed dims, ensuring a correct positioning of DDT\'s */\n
 }\n\
 /*\n\
 Input: REDUCED LAYOUT\n\
------------------------*/\n\
+----------------------*/\n\
 '+jqSTACK+' select {\n\
   min-height: 24px !important;\n\
 }\n\
@@ -501,9 +527,28 @@ Anything %Opt: REDUCED LAYOUT\n\
 ------------------------------\n\
 >>> KEEP this specification LAST! (must supersede any other one) */\n\
 '+jqSTACK+' '+jqOPT+','+jqSTACK+jqOPT+',\n\
-'+jqSTACK+' '+jqOPT+' img,'+jqSTACK+jqOPT+' img,'+jqSTACK+' img'+jqOPT+' {\n\
+'+jqSTACK+' '+jqOPT+' img, '+jqSTACK+jqOPT+' img, '+jqSTACK+' img'+jqOPT+' {\n\
   display: none !important;\n\
-}\n';//<!--
+}\n';
+  if(_params.hoverClick) {
+    CSS+='\
+/*\n\
+Menus : FULL and REDUCED LAYOUT (when hoverClick=1)\n\
+----------------------------------------------------*/\n\
+li:hover > '+jqSUBMENU+', '+jqMENUOPTION+':hover ~ '+jqSUBMENU+' {\n\
+  display: none !important;\n\
+}\n\
+li:hover > '+jqSUBMENU+jqOPEN+', '+jqMENUOPTION+':hover ~ '+jqSUBMENU+jqOPEN+', \
+'+jqSUBMENU+jqOPEN+' {\n\
+  display: block !important;\n\
+}\n\
+'+jqROOTMENU+' > li > div, '+jqROOTMENU+' > li > a {\n\
+  min-height: 25px;\n\
+}\n\
+'+jqMENUOPTION+' {\n\
+  cursor: cell;\n\
+}\n';
+  }//<!--
   if(_params.liveshow) {
     CSS+='\
 /*\n\
@@ -533,7 +578,7 @@ Live indicators (when liveshow=1)\n\
 #\\'+LWD+' * {\n\
   font-family: "Courier New";\n\
 }\n';
-}//-->
+  }//-->
   if(!_params.vscroll) {
     CSS+='\
 /*\n\
@@ -546,7 +591,7 @@ body {\n\
   CSS+='\
 /*\n\
 Individual defaults for full layout\n\
------------------------------------*/\n';
+------------------------------------*/\n';
   return CSS;
 };
 //=============================================================================

@@ -70,12 +70,19 @@ A *%Menu* class points out a menu[-wrapper] element which may be, either:
 In the latter case, only the first encountered 1st-level `<ul>` in the scope of the *%Menu* element will be considered.  
 If it is not embedded in a *%Block* element, a *%Menu* element will automatically become itself a block, whose breakpoint will be set to the default one (see above).
 
-A *%Main* class may be added to one (and only one) *%Menu*: in reduced layout, this menu is  replaced by a "commander" button like <span style="font-size:2em; font-weight:bold;">**&#9776;**</span>, which toggles the 1st level options visibility (options are stacked when visible).  
+A *%Main* class may be added to one (and only one) *%Menu*: in reduced layout, this menu is  replaced by a "commander" button like <span style="font-size:2em; font-weight:bold;">**&#9776;**</span>, which toggles the 1st-level options visibility (options are stacked when visible).  
 For other menus, 1st level options remain always visible.
 
-In any case, each 1st-level option have a drop-down toggle button in front of it when it has 2nd-level options.  
-Main menu is intended for a horizontal menu, while simple menu behaviour is particularly suitable for vertical menus.  
-CAUTION: a menu may have no more than 2 levels.
+Depending on *hoverClick* state (see CONFIGURATION OPTIONS below):
+- if not activated:
+  - when in full layout, nothing special happens
+  - when in reduced layout, each 1st-level option (of both *%Main* and other menus) have a drop-down toggle button in front of it when it has 2nd-level options
+  - this allows 1st-level options not only have an associated subemnu but also a direct link to other contents
+- if activated:
+  - when in full layout, CSS-driven submenus are opened when click rather than hover (a further click anywhere close them)
+  - when in reduced layout, no drop-down toggle button exist in front of 1st-level options
+  - at the opposite, in both layout, 1st-level options get a associated icon to inform the user about the presence of a submenu
+  - 1st-level options should not have links (if present, they are inhibited)
 
 HANDLING IMAGES
 ---------------
@@ -117,6 +124,7 @@ The following options are available in any jsmob version:
 - *breakPoint*=…   : … is the (px) value for the default breakpoint
 - *blindBuild*=1   : hide page while building (avoids showing build steps)
 - *cssTimeout*=…   : … is the (ms) delay before launching window.resize() [see also CAVEAT]
+- *hoverClick*=1   : 2nd-level options become visible when click rather than hover in full layout
 - *padding*=…      : … is the (px) value for padding-left/-right of a block in reduced layout
 - *prefix*=…       : … is any string of your choice, which is substituted to "%"
 - *vscroll*=0      : suppress vertical scroll-bar (useful to simulate a mobile while on desktop)
