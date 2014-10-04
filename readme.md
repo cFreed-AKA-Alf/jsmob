@@ -77,9 +77,9 @@ Depending on *hoverClick* state (see CONFIGURATION OPTIONS below):
 - if not activated:
   - when in full layout, nothing special happens
   - when in reduced layout, each 1st-level option (of both *%Main* and other menus) have a drop-down toggle button in front of it when it has 2nd-level options
-  - this allows 1st-level options not only have an associated subemnu but also a direct link to other contents
+  - this allows 1st-level options not only to have an associated submenu but also a direct link to other contents
 - if activated:
-  - when in full layout, CSS-driven submenus are opened when click rather than hover (a further click anywhere close them)
+  - when in full layout, CSS-driven submenus are opened when click rather than hover (a further click anywhere closes them)
   - when in reduced layout, no drop-down toggle button exist in front of 1st-level options
   - at the opposite, in both layout, 1st-level options get a associated icon to inform the user about the presence of a submenu
   - 1st-level options should not have links (if present, they are inhibited)
@@ -92,7 +92,7 @@ NOTE: images processing remains independant from any breakpoint; a *%Zoom*'ed im
 
 GENERAL OPTION
 --------------
-A *%Opt* class points out an element (block, image, menu-wrapper) which is considered as optional, and will disappear in reduced layout.
+A *%Opt* class points out an element (block, image, menu-wrapper) which is considered optional, and will disappear in reduced layout.
 
 SYNTAX RULES
 ------------
