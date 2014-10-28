@@ -349,14 +349,18 @@ var process= function() { /*
   */
   $(jqZOOM).each(function() {
     var prepare_img=function(target) {
+      // define max-width, depending on either natural-width or given %Width:
       var image={baseWidth:target.naturalWidth}; // *** TBR for IE7/8
       //*** http://www.jacklmoore.com/notes/naturalwidth-and-naturalheight-in-ie/
       getDims(target,image); // use given %Width_X, if any
-      $(target).css({maxWidth:image.baseWidth});
+      $(target).css({maxWidth:image.baseWidth})
+      // drop any width/height attributes, ensuring to keep proportional dims:
+      // ***TBR: should be replaced by {height:auto} (thanks Bootstrap)
+      .removeAttr('width').removeAttr('height');//<!--
       if(_params.liveshow) {
         enforceId(target);
         createLWD($(target),'zoom');
-      }
+      }//-->
     };
     if(this.tagName=='IMG') {
       prepare_img(this);
@@ -420,7 +424,8 @@ Blocks and Cols: REDUCED LAYOUT\n\
   display: block !important;\n\
   left: 0 !important;\n\
   width: 100% !important;\n\
-  /* don\'t consume horizontal space: */\n\
+  /* don\'t consume useless space: */\n\
+  margin-top: 0 !important;\n\
   margin-left: 0 !important;\n\
   margin-right: 0 !important;\n\
   border-left-width: 0 !important;\n\
@@ -452,28 +457,6 @@ Menus: REDUCED LAYOUT\n\
   background-color: #aaa;\n\
   color: #444;\n\
 }\n\
-/* For DDT button, thanks to https://drupal.org/project/rubix-responsive-theme */\n\
-'+jqDDT+' {\n\
-  background: none repeat scroll 0 0 #555 !important;\n\
-  border: 5px solid #888 !important;\n\
-  border-radius: 15px !important;\n\
-  height: 20px !important;\n\
-  position: absolute !important;\n\
-  left: 5px !important;\n\
-  top: 2px !important;\n\
-  width: 20px !important;\n\
-  z-index: 9999;\n\
-  cursor: pointer;\n\
-}\n\
-'+jqDDT+' > span {\n\
-  border-left: 5px solid rgba(0, 0, 0, 0) !important;\n\
-  border-right: 5px solid rgba(0, 0, 0, 0) !important;\n\
-  border-top: 5px solid #aaa !important;\n\
-  display: block !important;\n\
-  height: 0 !important;\n\
-  margin: 8px 0 0 5px !important;\n\
-  width: 0 !important;\n\
-}\n\
 '+jqROOTMENU+' {\n\
   width: 100% !important;\n\
 }\n\
@@ -503,9 +486,6 @@ Set <div> and <a> hard-fixed dims, ensuring correct positioning of DDT\'s, if an
 }\n\
 '+jqSTACK+' '+jqSUBMENU+jqOPEN+' {\n\
   display: block !important;\n\
-}\n\
-'+jqSTACK+' '+jqDDT+' {\n\
-  display: inline !important;\n\
 }\n\
 /*\n\
 Input: REDUCED LAYOUT\n\
@@ -547,6 +527,33 @@ li:hover > '+jqSUBMENU+jqOPEN+', '+jqMENUOPTION+':hover ~ '+jqSUBMENU+jqOPEN+', 
 }\n\
 '+jqMENUOPTION+' {\n\
   cursor: cell;\n\
+}\n';
+  } else {
+    CSS+='\
+/* For DDT button, thanks to https://drupal.org/project/rubix-responsive-theme */\n\
+'+jqDDT+' {\n\
+  background: none repeat scroll 0 0 #555 !important;\n\
+  border: 5px solid #888 !important;\n\
+  border-radius: 15px !important;\n\
+  height: 20px !important;\n\
+  position: absolute !important;\n\
+  left: 5px !important;\n\
+  top: 2px !important;\n\
+  width: 20px !important;\n\
+  z-index: 9999;\n\
+  cursor: pointer;\n\
+}\n\
+'+jqDDT+' > span {\n\
+  border-left: 5px solid rgba(0, 0, 0, 0) !important;\n\
+  border-right: 5px solid rgba(0, 0, 0, 0) !important;\n\
+  border-top: 5px solid #aaa !important;\n\
+  display: block !important;\n\
+  height: 0 !important;\n\
+  margin: 8px 0 0 5px !important;\n\
+  width: 0 !important;\n\
+}\n\
+'+jqSTACK+' '+jqDDT+' {\n\
+  display: inline !important;\n\
 }\n';
   }//<!--
   if(_params.liveshow) {
